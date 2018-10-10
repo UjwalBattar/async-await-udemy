@@ -1,12 +1,10 @@
 // USD, CAD, 20
-// 20 USD is worth 26 CAD. 
+// 20 USD is worth 26 CAD.
 // You can spend these in the following countries: Canada
 
 // `http://data.fixer.io/api/latest?access_key=${myFixerKey}`
 
-const {
-    myFixerKey
-} = require('./config');
+const { myFixerKey } = require('./config');
 const axios = require('axios');
 
 // const getExchangeRate = (from, to) => {
@@ -17,13 +15,20 @@ const axios = require('axios');
 //     });
 // };
 
-
-
 const getExchangeRate = async (from, to) => {
-    const res = await axios.get(`http://data.fixer.io/api/latest?access_key=${myFixerKey}`);
-    const euro = 1 / res.data.rates[from];
-    const rate = euro * res.data.rates[to];
-    return rate;
+	try {
+		const res = await axios.get(`http://data.fixer.io/api/latest?access_key=${myFixerKey}`);
+		const euro = 1 / res.data.rates[from];
+		const rate = euro * res.data.rates[to];
+
+		if (isNaN(rate)) {
+			throw new Error();
+		}
+
+		return rate;
+	} catch (e) {
+		throw new Error(`Unable to get exchange rate for ${from} and ${to}.`);
+	}
 };
 
 // const getCountries = (currencyCode) => {
@@ -33,9 +38,13 @@ const getExchangeRate = async (from, to) => {
 // };
 
 const getCountries = async (currencyCode) => {
-    const res = await axios.get(`https://restcountries.eu/rest/v2/currency/${currencyCode}`)
-    const countries = res.data.map((country) => country.name);
-    return countries;
+	try {
+		const res = await axios.get(`https://restcountries.eu/rest/v2/currency/${currencyCode}`);
+		const countries = res.data.map((country) => country.name);
+		return countries;
+	} catch (e) {
+		throw new Error(`Unable to get countries that use ${currencyCode}.`);
+	}
 };
 
 // const convertCurrency = (from, to, amount) => {
@@ -49,21 +58,33 @@ const getCountries = async (currencyCode) => {
 // };
 
 const convertCurrency = async (from, to, amount) => {
-    let exchangeRate = await getExchangeRate(from, to);
-    let countries = await getCountries(to);
-    return `${amount} ${from} is worth ${exchangeRate} ${to}. You can spend it in the followilg countries: ${countries.join(', ')}.`;
+	let exchangeRate = await getExchangeRate(from, to);
+	let countries = await getCountries(to);
+	return `${amount} ${from} is worth ${exchangeRate} ${to}. You can spend it in the followilg countries: ${countries.join(
+		', '
+	)}.`;
 };
 
-const doWork() = async () => {
-    return 10;
+convertCurrency('USD', 'CAD', 20).then((message) => console.log(message)).catch((e) => console.log(e.message));
+
+const add = async (a, b) => a + b + c;
+
+const doWork = async () => {
+	try {
+		const result = await add(12, 13);
+		return result;
+	} catch (e) {
+		return 100000000;
+	}
 };
 
-doWork().then((data) => {
-    console.log(data);
-});
-
-
-// convertCurrency('USD', 'CAD', 20).then((message) => console.log(message)).catch((e) => console.log(e));
+doWork()
+	.then((data) => {
+		console.log(data);
+	})
+	.catch((e) => {
+		console.log(e.message);
+	});
 
 // getExchangeRate('USD', 'CAD').then((rate) => {
 //     console.log(rate);
