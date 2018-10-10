@@ -1,0 +1,22 @@
+{
+  "name": "async-await",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app-promise.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UjwalBattar/async-await-udemy.git"
+  },
+  "author": "Ujwal Battar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UjwalBattar/async-await-udemy/issues"
+  },
+  "homepage": "https://github.com/UjwalBattar/async-await-udemy#readme",
+  "dependencies": {
+    "axios": "^0.18.0"
+  }
+}
